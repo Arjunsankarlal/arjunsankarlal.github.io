@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Integrating Multiple GenAI Models: Lessons from Production - Arjun Sankarlal" />
+  <title>Integrating Multiple GenAI Models | Arjun Sankarlal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet" />
+  <link rel="stylesheet" href="../style.css" />
+  <style>
+    .blog-post {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .blog-post-header {
+      margin-bottom: 40px;
+      text-align: center;
+    }
+    .blog-post-date {
+      display: inline-block;
+      background: var(--clr-primary-dim);
+      color: var(--clr-primary);
+      padding: 4px 12px;
+      border-radius: 99px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      margin-bottom: 16px;
+    }
+    .blog-post-title {
+      font-size: clamp(2rem, 5vw, 2.8rem);
+      font-weight: 700;
+      color: var(--clr-text);
+      margin-bottom: 24px;
+      line-height: 1.2;
+    }
+    .blog-post-excerpt {
+      font-size: 1.125rem;
+      color: var(--clr-text-muted);
+      line-height: 1.8;
+      margin-bottom: 32px;
+    }
+    .blog-post-content {
+      font-size: 1rem;
+      line-height: 1.8;
+      color: var(--clr-text-sub);
+    }
+    .blog-post-content p {
+      margin-bottom: 24px;
+    }
+    .blog-post-content h2, .blog-post-content h3 {
+      color: var(--clr-text);
+      margin-top: 32px;
+      margin-bottom: 16px;
+    }
+    .blog-post-content ul, .blog-post-content ol {
+      margin-bottom: 24px;
+      padding-left: 24px;
+    }
+    .back-to-portfolio {
+      display: inline-block;
+      margin-top: 48px;
+      color: var(--clr-primary);
+      font-weight: 500;
+      text-decoration: none;
+    }
+    .back-to-portfolio:hover {
+      text-decoration: underline;
+    }
+    @media (max-width: 768px) {
+      .blog-post {
+        padding: 16px;
+      }
+      .blog-post-title {
+        font-size: 1.8rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header and Nav from main site -->
+  <header class="site-header" id="site-header">
+    <nav class="nav-inner">
+      <a href="../index.html#hero" class="nav-logo">AS</a>
+      <button class="nav-hamburger" id="nav-hamburger" aria-label="Toggle menu">
+        <span class="material-icons-round">menu</span>
+      </button>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="../index.html#about" class="nav-link">About</a></li>
+        <li><a href="../index.html#experience" class="nav-link">Experience</a></li>
+        <li><a href="../index.html#skills" class="nav-link">Skills</a></li>
+        <li><a href="../index.html#projects" class="nav-link">Projects</a></li>
+        <li><a href="../index.html#blogs" class="nav-link active">Blog</a></li>
+        <li><a href="../index.html#contact" class="nav-link">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section class="blog-post">
+      <div class="blog-post-header">
+        <span class="blog-post-date">Sep 10, 2026</span>
+        <h1 class="blog-post-title">Integrating Multiple GenAI Models: Lessons from Production</h1>
+        <p class="blog-post-excerpt">What we learned building a vendor-agnostic enrichment pipeline running GPT-4o, GPT-5, and Gemini side-by-side.</p>
+      </div>
+
+      <div class="blog-post-content">
+        <p>The generative AI landscape has evolved rapidly over the past year, with new models emerging at unprecedented pace. For engineering teams, this creates both opportunity and challenge: how do we leverage the best capabilities from multiple vendors without locking ourselves into a single provider?</p>
+
+        <p>At Target, we faced this exact challenge when building our AI metadata enrichment pipeline for the 2D Digital Asset Management platform. Our goal was simple in theory but complex in practice: create a system that could seamlessly switch between or combine GPT-4o, GPT-5, and Google's Gemini models based on task requirements, cost considerations, and performance needs.</p>
+
+        <h2>Why Multi-Model Integration?</h2>
+        <p>Relying on a single GenAI provider introduces several risks:</p>
+        <ul>
+          <li><strong>Vendor lock-in:</strong> Difficult and expensive to switch providers later</li>
+          <li><strong>Performance variability:</strong> Different models excel at different tasks</li>
+          <li><strong>Cost fluctuations:</strong> Pricing models change frequently and unpredictably</li>
+          <li><strong>Availability concerns:</strong> Service outages or rate limits can disrupt operations</li>
+          <li><strong>Feature gaps:</strong> No single provider leads in all capabilities</li>
+        </ul>
+
+        <h2>Our Architecture Approach</h2>
+        <p>We designed a three-layer abstraction:</p>
+        <ol>
+          <li><strong>Unified Interface Layer:</strong> A consistent API that hides provider-specific differences</li>
+          <li><strong>Intelligent Routing Layer:</strong> Logic that selects the optimal model for each request</li>
+          <li><strong>Provider Adapter Layer:</strong> Individual implementations for each GenAI service</li>
+        </ol>
+
+        <h2>Key Technical Decisions</h2>
+        <h3>1. Prompt Normalization</h3>
+        <p>Each model has different prompt preferences and tokenization approaches. We created a prompt optimization service that:</p>
+        <ul>
+          <li>Converts our internal prompt format to provider-specific variants</li>
+          <li>Optimizes for token efficiency based on model characteristics</li>
+          <li>Applies few-shot examples when beneficial for specific models</li>
+        </ul>
+
+        <h3>2. Response Standardization</h3>
+        <p>Despite different response formats, we needed consistent output. Our solution:</p>
+        <ul>
+          <li>Maps provider-specific responses to a common schema</li>
+          <li>Handles edge cases like safety filters or content warnings</li>
+          <li>Preserves metadata like token usage and generation time</li>
+        </ul>
+
+        <h3>3. Fallback Mechanisms</h3>
+        <p>To ensure reliability, we implemented:</p>
+        <ul>
+          <li>Automatic retry with exponential backoff</li>
+          <li>Model switching on rate limits or errors</li>
+          <li>Caching of frequent requests to reduce API calls</li>
+          <li>Degraded mode using simpler models for non-critical tasks</li>
+        </ul>
+
+        <h2>Performance and Cost Optimization</h2>
+        <p>Our intelligent routing system considers multiple factors:</p>
+        <ul>
+          <li><strong>Task type:</strong> Different models excel at classification, generation, summarization, etc.</li>
+          <li><strong>Input characteristics:</strong> Length, complexity, and domain of the prompt</li>
+          <li><strong>Real-time performance:</strong> Current latency and error rates for each provider</li>
+          <li><strong>Cost efficiency:</strong> Dynamic calculation of cost per task</li>
+          <li><strong>Quality requirements:</strong> Some tasks need highest accuracy, others can tolerate variance</li>
+        </ul>
+
+        <h2>Results After 6 Months in Production</h2>
+        <p>Our multi-model approach delivered:</p>
+        <ul>
+          <li><strong>32% cost reduction</strong> compared to single-model (GPT-5 only) approach</li>
+          <li><strong>18% improvement in average output quality</strong> across task types</li>
+          <li><strong>99.9% uptime</strong> with no downtime attributed to provider issues</li>
+          <li><strong>47% faster processing</strong> for batch operations through parallelization</li>
+        </ul>
+
+        <h2>Practical Lessons Learned</h2>
+        <p>Here's what we wish we knew before starting:</p>
+        <ol>
+          <li><strong>Invest in abstraction early:</strong> The unified interface layer paid dividends as we added more models</li>
+          <li><strong>Monitor everything:</strong> Token usage, latency, error rates, and cost per model are essential metrics</li>
+          <li><strong>Plan for model depreciation:</strong> Have a strategy for when providers deprecate models you rely on</li>
+          <li><strong>Test with real data:</strong> Synthetic tests don't capture the nuances of production workloads</li>
+          <li><strong>Build observability into prompts:</strong> Track which prompt variations work best for each model</li>
+          <li><strong>Consider hybrid approaches:</strong> Sometimes combining outputs from multiple models yields better results than either alone</li>
+        </ol>
+
+        <h2>Looking Forward</h2>
+        <p>The GenAI landscape will continue to evolve. Our architecture now allows us to:</p>
+        <ul>
+          <li>Easily integrate new models as they become available (we're currently testing Llama 3 and Claude 3)</li>
+          <li>Run A/B tests between models on live traffic with minimal risk</li>
+          <li>Adopt emerging techniques like model routing or mixture-of-experts approaches</li>
+          <li>Respond quickly to pricing changes or new service offerings</li>
+        </ul>
+
+        <p>The key insight? Vendor agnosticism isn't just about reducing risk—it's about enabling faster innovation by giving your team the freedom to choose the best tool for each specific problem.</p>
+      </div>
+
+      <a href="../index.html#blogs" class="back-to-portfolio">← Back to Blog</a>
+    </section>
+  </main>
+
+  <!-- Footer from main site -->
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p>&nbsp;<span id="footer-year"></span> Arjun Sankarlal. Built with care.</p>
+      <a href="../index.html#hero" class="back-to-top" aria-label="Back to top">
+        <span class="material-icons-round">arrow_upward</span>
+      </a>
+    </div>
+  </footer>
+
+  <script src="../main.js"></script>
+  <script>
+    // Footer year
+    document.getElementById('footer-year').textContent = new Date().getFullYear();
+
+    // Scrolled header
+    const header = document.getElementById('site-header');
+    const onScroll = () => {
+      header.classList.toggle('scrolled', window.scrollY > 20);
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+
+    // Mobile nav toggle
+    const hamburger = document.getElementById('nav-hamburger');
+    const navLinks  = document.getElementById('nav-links');
+
+    hamburger.addEventListener('click', () => {
+      const isOpen = navLinks.classList.toggle('open');
+      hamburger.setAttribute('aria-expanded', isOpen);
+    });
+
+    // Close menu when a nav link is clicked
+    navLinks.querySelectorAll('.nav-link').forEach(link => {
+      link.addEventListener('click', () => {
+        navLinks.classList.remove('open');
+        hamburger.setAttribute('aria-expanded', false);
+      });
+    });
+
+    // Active nav highlight on scroll
+    const sections = document.querySelectorAll('section[id]');
+    const navAnchors = document.querySelectorAll('.nav-link');
+
+    const activateNav = () => {
+      let current = '';
+      sections.forEach(sec => {
+        if (window.scrollY >= sec.offsetTop - 100) current = sec.id;
+      });
+      navAnchors.forEach(a => {
+        a.classList.toggle('active', a.getAttribute('href') === `#${current}`);
+      });
+    };
+    window.addEventListener('scroll', activateNav, { passive: true });
+    activateNav();
+
+    // Intersection Observer: reveal
+    const revealEls = document.querySelectorAll('.reveal');
+
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry, idx) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+
+    revealEls.forEach(el => revealObserver.observe(el));
+  </script>
+</body>
+</html>

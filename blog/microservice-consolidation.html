@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Microservice Consolidation: From Three to One - Arjun Sankarlal" />
+  <title>Microservice Consolidation | Arjun Sankarlal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet" />
+  <link rel="stylesheet" href="../style.css" />
+  <style>
+    .blog-post {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .blog-post-header {
+      margin-bottom: 40px;
+      text-align: center;
+    }
+    .blog-post-date {
+      display: inline-block;
+      background: var(--clr-primary-dim);
+      color: var(--clr-primary);
+      padding: 4px 12px;
+      border-radius: 99px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      margin-bottom: 16px;
+    }
+    .blog-post-title {
+      font-size: clamp(2rem, 5vw, 2.8rem);
+      font-weight: 700;
+      color: var(--clr-text);
+      margin-bottom: 24px;
+      line-height: 1.2;
+    }
+    .blog-post-excerpt {
+      font-size: 1.125rem;
+      color: var(--clr-text-muted);
+      line-height: 1.8;
+      margin-bottom: 32px;
+    }
+    .blog-post-content {
+      font-size: 1rem;
+      line-height: 1.8;
+      color: var(--clr-text-sub);
+    }
+    .blog-post-content p {
+      margin-bottom: 24px;
+    }
+    .blog-post-content h2, .blog-post-content h3 {
+      color: var(--clr-text);
+      margin-top: 32px;
+      margin-bottom: 16px;
+    }
+    .blog-post-content ul, .blog-post-content ol {
+      margin-bottom: 24px;
+      padding-left: 24px;
+    }
+    .back-to-portfolio {
+      display: inline-block;
+      margin-top: 48px;
+      color: var(--clr-primary);
+      font-weight: 500;
+      text-decoration: none;
+    }
+    .back-to-portfolio:hover {
+      text-decoration: underline;
+    }
+    @media (max-width: 768px) {
+      .blog-post {
+        padding: 16px;
+      }
+      .blog-post-title {
+        font-size: 1.8rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header and Nav from main site -->
+  <header class="site-header" id="site-header">
+    <nav class="nav-inner">
+      <a href="../index.html#hero" class="nav-logo">AS</a>
+      <button class="nav-hamburger" id="nav-hamburger" aria-label="Toggle menu">
+        <span class="material-icons-round">menu</span>
+      </button>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="../index.html#about" class="nav-link">About</a></li>
+        <li><a href="../index.html#experience" class="nav-link">Experience</a></li>
+        <li><a href="../index.html#skills" class="nav-link">Skills</a></li>
+        <li><a href="../index.html#projects" class="nav-link">Projects</a></li>
+        <li><a href="../index.html#blogs" class="nav-link active">Blog</a></li>
+        <li><a href="../index.html#contact" class="nav-link">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section class="blog-post">
+      <div class="blog-post-header">
+        <span class="blog-post-date">Sep 5, 2026</span>
+        <h1 class="blog-post-title">Microservice Consolidation: From Three to One</h1>
+        <p class="blog-post-excerpt">A practitioner's guide to identifying consolidation opportunities and executing them without disrupting existing deployments.</p>
+      </div>
+
+      <div class="blog-post-content">
+        <p>Microservice architecture has become the dominant pattern for building scalable, resilient systems. However, as systems evolve, what begins as a clean separation of concerns can accumulate into operational overhead, increased latency, and unnecessary complexity. The pendulum often swings back toward consolidation—but doing it wrong can reintroduce the very problems microservices were meant to solve.</p>
+
+        <p>At Target, we recently consolidated three tightly-coupled microservices into a single, well-modularized service for our 2D Digital Asset Management platform. The result? 40% reduction in operational overhead, 60% decrease in inter-service latency, and simplified deployment processes—all without sacrificing the core benefits of modularity.</p>
+
+        <h2>When to Consider Consolidation</h2>
+        <p>Not all microservices should be consolidated. Look for these signals:</p>
+        <ul>
+          <li><strong>High inter-service communication:</strong> Services that constantly exchange data with each other (especially synchronous calls)</li>
+          <li><strong>Shared failure domains:</strong> When services are always deployed, scaled, or fail together</li>
+          <li><strong>Duplicate concerns:</strong> Similar logging, monitoring, or authentication implementations across services</li>
+          <li><strong>Transactional boundaries:</strong> Business logic that frequently spans multiple services requiring distributed transactions</li>
+          <li><strong>Team cognitive load:</strong> When maintaining separation creates more complexity than it solves</li>
+        </ul>
+
+        <h2>Our Consolidation Journey</h2>
+        <p>We started with three services:</p>
+        <ol>
+          <li><strong>Asset Ingestion Service:</strong> Handle uploads, validation, and initial processing</li>
+          <li><strong>Metadata Enrichment Service:</strong> Add tags, descriptions, and AI-generated insights</li>
+          <li><strong>Asset Publication Service:</strong> Make assets available to downstream consumers</li>
+        </ol>
+
+        <p>These services communicated via REST APIs and shared a common database. Over time, we noticed:</p>
+        <ul>
+          <li>80% of asset ingestion requests immediately triggered enrichment</li>
+          <li>Enrichment service rarely functioned without publication service</li>
+          <li>Deployment coordination was required for 95% of changes</li>
+          <li>Debugging required tracing across all three services</li>
+        </ul>
+
+        <h2>The Consolidation Strategy</h2>
+        <p>We avoided a "big bang" rewrite by following this approach:</p>
+        <ol>
+          <li><strong>Phase 1: Shared Library Extraction</strong>
+            <ul>
+              <li>Identified common utilities (validation, formatting, database access)</li>
+              <li>Created a shared SDK used by all three services</li>
+              <li>Reduced code duplication while maintaining service boundaries</li>
+            </ul>
+          </li>
+          <li><strong>Phase 2: Strategic Service Mergers</strong>
+            <ul>
+              <li>Combined ingestion and enrichment (highest coupling)</li>
+              <li>Kept publication separate for independent scaling needs</li>
+              <li>Used feature flags to enable gradual migration</li>
+            </ul>
+          </li>
+          <li><strong>Phase 3: Final Consolidation</strong>
+            <ul>
+              <li>Merged publication service after validating stability</li>
+              <li>Introduced internal module boundaries to preserve logical separation</li>
+              <li>Maintained API compatibility for internal consumers</li>
+            </ul>
+          </li>
+        </ol>
+
+        <h2>Technical Implementation Details</h2>
+        <h3>1. Module-Based Architecture</h3>
+        <p>Instead of returning to a monolithic blob, we used:</p>
+        <ul>
+          <li>Clearly defined internal modules (ingestion, enrichment, publication)</li>
+          <li>Explicit interfaces between modules</li>
+          <li>Dependency injection for testability</li>
+          <li>Shared configuration and logging frameworks</li>
+        </ul>
+
+        <h3>2. Database Refactoring</h3>
+        <p>We gradually migrated from:</p>
+        <ul>
+          <li>Service-specific tables with redundant data</li>
+          <li>To a normalized schema with clear ownership</li>
+          <li>Using database views for backward compatibility during transition</li>
+        </ul>
+
+        <h3>3. Event-Driven Communication</h3>
+        <p>Where services previously used synchronous REST calls, we introduced:</p>
+        <ul>
+          <li>Internal event bus for asynchronous communication</li>
+          <li>Retry mechanisms and dead letter queues</li>
+          <li>Event sourcing for audit trails</li>
+        </ul>
+
+        <h2>Results and Metrics</h2>
+        <p>After consolidation, we measured:</p>
+        <ul>
+          <li><strong>40% reduction in operational overhead</strong> (fewer deployments, monitoring alerts, runbooks)</li>
+          <li><strong>60% decrease in latency</strong> for asset processing pipelines (eliminated network hops)</li>
+          <li><strong>75% faster debugging</strong> (single service traces vs. distributed tracing)</li>
+          <li><strong>Simplified onboarding</strong> (new engineers learn one service instead of three)</li>
+          <li><strong>Reduced cognitive load</strong> during incident response</li>
+        </ul>
+
+        <h2>Key Lessons Learned</h2>
+        <ol>
+          <li><strong>Consolidate logically, not arbitrarily:</strong> Group by business capabilities, not technical convenience</li>
+          <li><strong>Preserve modularity internally:</strong> Use clear module boundaries to avoid monolithic complexity</li>
+          <li><strong>Plan for data migration:</strong> Schema changes require careful backward compatibility strategies</li>
+          <li><strong>Consider incremental approaches:</strong> Big bang rewrites are risky; strive for strangler fig patterns</li>
+          <li><strong>Measure before and after:</strong> Have clear metrics to validate that consolidation improved the situation</li>
+          <li><strong>Don't forget the team:</strong> Consolidation affects team structures and ownership models</li>
+        </ol>
+
+        <h2>When NOT to Consolidate</h2>
+        <p>We also identified services that should remain separate:</p>
+        <ul>
+          <li>Services with vastly different scaling requirements</li>
+          <li>Services owned by different teams with independent release cycles</li>
+          <li>Services requiring different technology stacks or runtime environments</li>
+          <li>Services handling isolated business domains with minimal interaction</li>
+        </ul>
+
+        <h2>The Balance Point</h2>
+        <p>The goal isn't to minimize the number of services, but to optimize for:</p>
+        <ul>
+          <li>Team autonomy and ownership clarity</li>
+          <li>System reliability and observability</li>
+          <li>Deployment frequency and safety</li>
+          <li>Development speed and cognitive load</li>
+        </ul>
+
+        <p>Sometimes that means more services. Sometimes it means fewer. The key is regularly evaluating whether your service boundaries still serve your organization's needs—or if they've become accumulated technical debt that needs addressing.</p>
+      </div>
+
+      <a href="../index.html#blogs" class="back-to-portfolio">← Back to Blog</a>
+    </section>
+  </main>
+
+  <!-- Footer from main site -->
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p>&nbsp;<span id="footer-year"></span> Arjun Sankarlal. Built with care.</p>
+      <a href="../index.html#hero" class="back-to-top" aria-label="Back to top">
+        <span class="material-icons-round">arrow_upward</span>
+      </a>
+    </div>
+  </footer>
+
+  <script src="../main.js"></script>
+  <script>
+    // Footer year
+    document.getElementById('footer-year').textContent = new Date().getFullYear();
+
+    // Scrolled header
+    const header = document.getElementById('site-header');
+    const onScroll = () => {
+      header.classList.toggle('scrolled', window.scrollY > 20);
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+
+    // Mobile nav toggle
+    const hamburger = document.getElementById('nav-hamburger');
+    const navLinks  = document.getElementById('nav-links');
+
+    hamburger.addEventListener('click', () => {
+      const isOpen = navLinks.classList.toggle('open');
+      hamburger.setAttribute('aria-expanded', isOpen);
+    });
+
+    // Close menu when a nav link is clicked
+    navLinks.querySelectorAll('.nav-link').forEach(link => {
+      link.addEventListener('click', () => {
+        navLinks.classList.remove('open');
+        hamburger.setAttribute('aria-expanded', false);
+      });
+    });
+
+    // Active nav highlight on scroll
+    const sections = document.querySelectorAll('section[id]');
+    const navAnchors = document.querySelectorAll('.nav-link');
+
+    const activateNav = () => {
+      let current = '';
+      sections.forEach(sec => {
+        if (window.scrollY >= sec.offsetTop - 100) current = sec.id;
+      });
+      navAnchors.forEach(a => {
+        a.classList.toggle('active', a.getAttribute('href') === `#${current}`);
+      });
+    };
+    window.addEventListener('scroll', activateNav, { passive: true });
+    activateNav();
+
+    // Intersection Observer: reveal
+    const revealEls = document.querySelectorAll('.reveal');
+
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry, idx) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+
+    revealEls.forEach(el => revealObserver.observe(el));
+  </script>
+</body>
+</html>
