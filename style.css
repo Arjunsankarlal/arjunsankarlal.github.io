@@ -203,10 +203,11 @@ img { display: block; max-width: 100%; }
    HERO
 ───────────────────────────────────────────── */
 .hero {
-  min-height: 85svh;
+  min-height: 100svh;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  align-items: center;
   padding: calc(var(--nav-h) + 30px) 24px 50px;
   max-width: 1100px;
   margin: 0 auto;
@@ -215,9 +216,11 @@ img { display: block; max-width: 100%; }
 
 .hero-layout {
   display: flex;
+  flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  gap: 40px;
+  gap: 50px;
+  width: 100%;
 }
 
 .hero-content {
@@ -546,6 +549,48 @@ img { display: block; max-width: 100%; }
   margin-top: 30px;
 }
 
+.skills-cloud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 24px;
+  justify-content: center;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.skill-tag {
+  background: var(--clr-surface2);
+  color: var(--clr-text-sub);
+  font-size: 0.85rem;
+  font-weight: 500;
+  padding: 8px 16px;
+  border-radius: 99px;
+  border: 1px solid var(--clr-border);
+  transition: background var(--transition), color var(--transition), border-color var(--transition), transform var(--transition);
+  cursor: default;
+}
+
+.skill-tag:hover {
+  background: var(--clr-primary-dim);
+  border-color: var(--clr-primary);
+  color: var(--clr-text);
+  transform: translateY(-2px);
+}
+
+.skill-tag-accent {
+  background: var(--clr-accent-dim);
+  border-color: rgba(0,212,170,.25);
+  color: var(--clr-accent);
+}
+
+.skill-tag-accent:hover {
+  background: rgba(0,212,170,.2);
+  border-color: var(--clr-accent);
+  color: var(--clr-accent);
+}
+
 .skill-group {
   background: var(--clr-surface);
   border: 1px solid var(--clr-border);
@@ -738,48 +783,6 @@ img { display: block; max-width: 100%; }
 .blog-link .material-icons-round { font-size: 1rem; }
 
 /* ─────────────────────────────────────────────
-   EDUCATION
-───────────────────────────────────────────── */
-.edu-card {
-  display: flex;
-  gap: 20px;
-  align-items: flex-start;
-  background: var(--clr-bg);
-  border: 1px solid var(--clr-border);
-  border-radius: var(--radius-m);
-  padding: 24px;
-  margin-top: 30px;
-  transition: border-color var(--transition);
-}
-.edu-card:hover { border-color: rgba(108,99,255,.4); }
-
-.edu-icon {
-  background: var(--clr-primary-dim);
-  border-radius: var(--radius-s);
-  padding: 14px;
-  flex-shrink: 0;
-}
-.edu-icon .material-icons-round {
-  font-size: 2rem;
-  color: var(--clr-primary);
-}
-
-.edu-degree {
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: var(--clr-text);
-  margin-bottom: 6px;
-}
-.edu-school {
-  font-size: 0.9rem;
-  color: var(--clr-primary);
-  font-weight: 500;
-  margin-bottom: 6px;
-}
-.edu-detail {
-  font-size: 0.85rem;
-  color: var(--clr-text-muted);
-}
 
 /* ─────────────────────────────────────────────
    CONTACT
@@ -899,7 +902,6 @@ img { display: block; max-width: 100%; }
   .projects-grid,
   .blog-grid { grid-template-columns: 1fr; }
 
-  .edu-card { flex-direction: column; }
 
   .contact-links { flex-direction: column; align-items: center; }
 
